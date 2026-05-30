@@ -1,6 +1,233 @@
+--[[
+Merged Script: Combat Macro + Anti-AFK UI
+]]
+
+repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character
+
+----------------------------------------------------
+-- ANTI-AFK UI & LOGIC SETUP
+----------------------------------------------------
+if getgenv().AntiAfkExecuted and thisoneissocoldww then 
+    getgenv().AntiAfkExecuted = false
+    getgenv().zamanbaslaticisi = false
+    game.CoreGui.thisoneissocoldww:Destroy()
+end
+
+getgenv().AntiAfkExecuted = true
+
+local thisoneissocoldww = Instance.new("ScreenGui")
+local madebybloodofbatus = Instance.new("Frame")
+local UICornerw = Instance.new("UICorner")
+local DestroyButton = Instance.new("TextButton")
+local uselesslabelone = Instance.new("TextLabel")
+local timerlabel = Instance.new("TextLabel")
+local uselesslabeltwo = Instance.new("TextLabel")
+local fpslabel = Instance.new("TextLabel")
+local uselesslabelthree = Instance.new("TextLabel")
+local pinglabel = Instance.new("TextLabel")
+local uselessframeone = Instance.new("Frame")
+local UICornerww = Instance.new("UICorner")
+local uselesslabelfour = Instance.new("TextLabel")
+
+--Properties:
+thisoneissocoldww.Name = "thisoneissocoldww"
+thisoneissocoldww.Parent = game.CoreGui
+thisoneissocoldww.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+madebybloodofbatus.Name = "madebybloodofbatus"
+madebybloodofbatus.Parent = thisoneissocoldww
+madebybloodofbatus.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+madebybloodofbatus.Position = UDim2.new(0.0854133144, 0, 0.13128835, 0)
+madebybloodofbatus.Size = UDim2.new(0, 225, 0, 96)
+
+UICornerw.Parent = madebybloodofbatus
+
+DestroyButton.Name = "DestroyButton"
+DestroyButton.Parent = madebybloodofbatus
+DestroyButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DestroyButton.BackgroundTransparency = 1.000
+DestroyButton.Position = UDim2.new(0.871702373, 0, 0.0245379955, 0)
+DestroyButton.Size = UDim2.new(0, 27, 0, 15)
+DestroyButton.Font = Enum.Font.SourceSans
+DestroyButton.Text = "X"
+DestroyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+DestroyButton.TextSize = 14.000
+
+DestroyButton.MouseButton1Click:Connect(function()
+    getgenv().AntiAfkExecuted = false
+    getgenv().zamanbaslaticisi = false
+    wait(0.1)
+    if thisoneissocoldww and thisoneissocoldww.Parent then
+        thisoneissocoldww:Destroy()
+    end
+end)
+
+uselesslabelone.Parent = madebybloodofbatus
+uselesslabelone.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabelone.BackgroundTransparency = 1.000
+uselesslabelone.Position = UDim2.new(0.302473009, 0, 0, 0)
+uselesslabelone.Size = UDim2.new(0, 95, 0, 24)
+uselesslabelone.Font = Enum.Font.SourceSans
+uselesslabelone.Text = "Anti Afk V1"
+uselesslabelone.TextColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabelone.TextSize = 14.000
+
+timerlabel.Name = "timerlabel"
+timerlabel.Parent = madebybloodofbatus
+timerlabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+timerlabel.BackgroundTransparency = 1.000
+timerlabel.Position = UDim2.new(0.65344125, 0, 0.68194294, 0)
+timerlabel.Size = UDim2.new(0, 60, 0, 24)
+timerlabel.Font = Enum.Font.SourceSans
+timerlabel.Text = "0:0:0"
+timerlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+timerlabel.TextSize = 14.000
+
+uselesslabeltwo.Parent = madebybloodofbatus
+uselesslabeltwo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabeltwo.BackgroundTransparency = 1.000
+uselesslabeltwo.Position = UDim2.new(0.038864471, 0, 0.373806685, 0)
+uselesslabeltwo.Size = UDim2.new(0, 29, 0, 24)
+uselesslabeltwo.Font = Enum.Font.SourceSans
+uselesslabeltwo.Text = "Ping: "
+uselesslabeltwo.TextColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabeltwo.TextSize = 14.000
+
+fpslabel.Name = "fpslabel"
+fpslabel.Parent = madebybloodofbatus
+fpslabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+fpslabel.BackgroundTransparency = 1.000
+fpslabel.Position = UDim2.new(0.724226236, 0, 0.358796299, 0)
+fpslabel.Size = UDim2.new(0, 55, 0, 24)
+fpslabel.Font = Enum.Font.SourceSans
+fpslabel.Text = "0"
+fpslabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+fpslabel.TextSize = 14.000
+
+uselesslabelthree.Parent = madebybloodofbatus
+uselesslabelthree.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabelthree.BackgroundTransparency = 1.000
+uselesslabelthree.Position = UDim2.new(0.506917477, 0, 0.352585167, 0)
+uselesslabelthree.Size = UDim2.new(0, 26, 0, 24)
+uselesslabelthree.Font = Enum.Font.SourceSans
+uselesslabelthree.Text = "Fps: "
+uselesslabelthree.TextColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabelthree.TextSize = 14.000
+
+pinglabel.Name = "pinglabel"
+pinglabel.Parent = madebybloodofbatus
+pinglabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+pinglabel.BackgroundTransparency = 1.000
+pinglabel.Position = UDim2.new(0.20330891, 0, 0.371578127, 0)
+pinglabel.Size = UDim2.new(0, 55, 0, 24)
+pinglabel.Font = Enum.Font.SourceSans
+pinglabel.Text = "0"
+pinglabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+pinglabel.TextSize = 14.000
+pinglabel.TextWrapped = true
+
+uselessframeone.Parent = madebybloodofbatus
+uselessframeone.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+uselessframeone.Position = UDim2.new(0.00444444455, 0, 0.243312627, 0)
+uselessframeone.Size = UDim2.new(0, 224, 0, 5)
+UICornerww.CornerRadius = UDim.new(0, 50)
+UICornerww.Parent = uselessframeone
+
+uselesslabelfour.Parent = madebybloodofbatus
+uselesslabelfour.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabelfour.BackgroundTransparency = 1.000
+uselesslabelfour.Position = UDim2.new(0.0580285639, 0, 0.8125, 0)
+uselesslabelfour.Size = UDim2.new(0, 95, 0, 12)
+uselesslabelfour.Font = Enum.Font.SourceSans
+uselesslabelfour.Text = "Anti-Afk Auto Enabled"
+uselesslabelfour.TextColor3 = Color3.fromRGB(255, 255, 255)
+uselesslabelfour.TextSize = 14.000
+
+-- AFK UI Drag Logic
+local Drag = madebybloodofbatus
+local gsTween = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    local SmoothDrag = {}
+    SmoothDrag.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    local dragSmoothFunction = gsTween:Create(Drag, TweenInfo.new(0.04, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), SmoothDrag)
+    dragSmoothFunction:Play()
+end
+Drag.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Drag.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
+end)
+Drag.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging and Drag.Size then update(input) end
+end)
+
+-- Actual Anti-AFK Kick Bypass
+local VirtualUser = game:GetService("VirtualUser")
+game.Players.LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
+end)
+
+-- FPS Counter
+local FPS = {}
+local sec = tick()
+game:GetService("RunService").RenderStepped:Connect(function()
+    local fr = tick()
+    for i = #FPS, 1, -1 do
+        FPS[i + 1] = (FPS[i] >= fr - 1) and FPS[i] or nil
+    end
+    FPS[1] = fr
+    local fps = math.floor((tick() - sec >= 1 and #FPS) or (#FPS / (tick() - sec)))
+    if fpslabel and fpslabel.Parent then fpslabel.Text = fps end
+end)
+
+-- Ping Counter
+task.spawn(function()
+    while timerlabel and timerlabel.Parent do
+        task.wait(1)
+        local stats = game:GetService("Stats"):FindFirstChild("PerformanceStats")
+        if stats and stats:FindFirstChild("Ping") then
+            local ping = math.floor(tonumber(stats.Ping:GetValue()) or 0)
+            if pinglabel and pinglabel.Parent then pinglabel.Text = ping end
+        end
+    end
+end)
+
+-- Timer Counter (Threaded so it doesn't freeze the combat script)
+local saniye, dakika, saat = 0, 0, 0
+getgenv().zamanbaslaticisi = true
+task.spawn(function()
+    while getgenv().zamanbaslaticisi do
+        task.wait(1)
+        saniye = saniye + 1
+        if saniye >= 60 then saniye = 0; dakika = dakika + 1 end
+        if dakika >= 60 then dakika = 0; saat = saat + 1 end
+        if timerlabel and timerlabel.Parent then
+            timerlabel.Text = saat..":"..dakika..":"..saniye
+        end
+    end
+end)
+
+
+----------------------------------------------------
+-- COMBAT MACRO SYSTEM START
+----------------------------------------------------
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 local VIM = game:GetService("VirtualInputManager")
 local EnemyService = workspace:WaitForChild("EnemyService")
 
@@ -33,20 +260,18 @@ local KeyCode_G = Enum.KeyCode.G
 ----------------------------------------------------
 -- MOBILE TOGGLE UI CREATION
 ----------------------------------------------------
-local btn = nil -- Declare early so functions below can see it
+local btn = nil 
 
 local function createToggleUI()
-    -- ScreenGui (CoreGui keeps it on top of everything, even when menu is open)
     local gui = Instance.new("ScreenGui")
     gui.Name = "MacroToggleGui"
     gui.ResetOnSpawn = false
     gui.Parent = game:GetService("CoreGui")
 
-    -- Main Button
     btn = Instance.new("TextButton")
     btn.Name = "ToggleBtn"
     btn.Size = UDim2.new(0, 100, 0, 40)
-    btn.Position = UDim2.new(0, 20, 0.5, 0) -- Left side, middle of screen
+    btn.Position = UDim2.new(0, 20, 0.5, 0) 
     btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Text = "OFF"
@@ -55,49 +280,44 @@ local function createToggleUI()
     btn.AutoButtonColor = true
     btn.Parent = gui
 
-    -- Make it look nice and round
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = btn
 
-    -- Add a subtle stroke
     local stroke = Instance.new("UIStroke")
     stroke.Thickness = 1.5
     stroke.Color = Color3.fromRGB(100, 100, 100)
     stroke.Parent = btn
 
-    -- Make it draggable (optional but highly recommended for mobile)
-    local dragging, dragInput, dragStart, startPos
+    -- Make Macro Button Draggable
+    local dragging2, dragInput2, dragStart2, startPos2
 
     btn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = btn.Position
-
+            dragging2 = true
+            dragStart2 = input.Position
+            startPos2 = btn.Position
             input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
+                if input.UserInputState == Enum.UserInputState.End then dragging2 = false end
             end)
         end
     end)
 
     btn.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
+            dragInput2 = input
         end
     end)
 
     UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            btn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        if input == dragInput2 and dragging2 then
+            local delta = input.Position - dragStart2
+            btn.Position = UDim2.new(startPos2.X.Scale, startPos2.X.Offset + delta.X, startPos2.Y.Scale, startPos2.Y.Offset + delta.Y)
         end
     end)
 end
 
-createToggleUI() -- Build the UI immediately
+createToggleUI() 
 
 ----------------------------------------------------
 -- SOUND SYSTEM
@@ -150,7 +370,7 @@ task.spawn(function()
             if toggled and not disabledByPlayer then
                 disabledByPlayer = true
                 wasForceDisabled = true
-                disableAll() -- This will automatically update the button color to OFF
+                disableAll()
                 playAlarm(18132053173, 1) 
                 lastDangerTime = tick()
             elseif disabledByPlayer and wasForceDisabled and (tick() - lastDangerTime > 4) then
@@ -161,7 +381,7 @@ task.spawn(function()
             if disabledByPlayer and wasForceDisabled then
                 disabledByPlayer = false
                 wasForceDisabled = false
-                enableAll() -- This will automatically update the button color to ON
+                enableAll()
             end
         end
     end
@@ -306,14 +526,14 @@ local function combatLoop()
 end
 
 ----------------------------------------------------
--- TOGGLE FUNCTIONS (Now controls the button visuals too)
+-- TOGGLE FUNCTIONS
 ----------------------------------------------------
 
 local function enableAll()
     toggled = true
     if btn then
         btn.Text = "ON"
-        btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) -- Green when on
+        btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) 
     end
     lockConn = RunService.RenderStepped:Connect(lockBehindEnemy)
     task.spawn(combatLoop)
@@ -323,7 +543,7 @@ local function disableAll()
     toggled = false
     if btn then
         btn.Text = "OFF"
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40) -- Dark gray when off
+        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40) 
     end
     if lockConn then
         lockConn:Disconnect()
@@ -331,7 +551,6 @@ local function disableAll()
     end
 end
 
--- Unified toggle logic so PC and Mobile do the exact same thing
 local function handleToggle()
     if tick() - lastToggle < 0.3 then return end
     lastToggle = tick()
@@ -342,7 +561,6 @@ local function handleToggle()
         wasForceDisabled = false
     else
         if disabledByPlayer then
-            -- Panic cancel
             disabledByPlayer = false
             wasForceDisabled = false
         else
@@ -352,17 +570,14 @@ local function handleToggle()
 end
 
 ----------------------------------------------------
--- INPUT LISTENERS (PC Keyboard + Mobile Button)
+-- INPUT LISTENERS
 ----------------------------------------------------
-
--- PC Keyboard Listener
 RunService.RenderStepped:Connect(function()
     if UserInputService:IsKeyDown(KeyCode_G) then
         handleToggle()
     end
 end)
 
--- Mobile Button Listener
 if btn then
     btn.MouseButton1Click:Connect(handleToggle)
 end
