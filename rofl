@@ -6,9 +6,9 @@
 ]]
 
 -- !!! CONFIGURATION !!!
-local GitHubURL = "PASTE_YOUR_RAW_GITHUB_LINK_HERE" 
+local GitHubURL = "https://raw.githubusercontent.com/RRZai/DUMP/refs/heads/main/rofl" 
 local ScriptVersion = 1 
-local PrivateServerCode = "PASTE_YOUR_PRIVATE_SERVER_ACCESS_CODE_HERE" 
+local PrivateServerCode = "15294093330013150763923144783566" 
 
 ----------------------------------------------------
 -- GLOBAL KILL SWITCH & DELTA WORKSPACE SAVING
