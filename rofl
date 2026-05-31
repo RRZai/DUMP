@@ -1,12 +1,88 @@
 --[[
-Merged Script: Combat Macro + Anti-AFK UI
+    AUTO-UPDATING PRIVATE SERVER MACRO
+    1. Put your RAW GitHub link below.
+    2. Update 'ScriptVersion' manually in your GitHub file when you make changes.
+    3. Put your Private Server ACCESS CODE below (The long string of letters in your link).
 ]]
 
-repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character
+-- !!! CONFIGURATION !!!
+local GitHubURL = "PASTE_YOUR_RAW_GITHUB_LINK_HERE" 
+local ScriptVersion = 1 
+local PrivateServerCode = "PASTE_YOUR_PRIVATE_SERVER_ACCESS_CODE_HERE" 
+
+----------------------------------------------------
+-- GLOBAL KILL SWITCH & DELTA WORKSPACE SAVING
+----------------------------------------------------
+if getgenv().MacroKilled then return end 
+getgenv().MacroKilled = false
+
+local SaveFileName = "MacroToggleState.txt"
+
+-- Safely save toggle state to Delta's Workspace
+local function SaveToggleState(state)
+    pcall(function()
+        writefile(SaveFileName, state)
+    end)
+end
+
+-- Safely read toggle state from Delta's Workspace
+local function ReadToggleState()
+    local success, result = pcall(function()
+        return readfile(SaveFileName)
+    end)
+    if success and result == "ON" then
+        return true
+    end
+    return false
+end
+
+----------------------------------------------------
+-- BACKGROUND SYSTEMS (Update, Rejoin, Auto-Start)
+----------------------------------------------------
+
+-- 1. Auto-Updater (Checks every 5 to 10 minutes)
+task.spawn(function()
+    while not getgenv().MacroKilled do
+        task.wait(math.random(300, 600)) 
+        if getgenv().MacroKilled then return end
+        
+        pcall(function()
+            local newScript = game:HttpGet(GitHubURL)
+            local newVer = tonumber(newScript:match("local ScriptVersion = (%d+)")) or 0
+            
+            if newVer > ScriptVersion then
+                getgenv().MacroKilled = true 
+                getgenv().zamanbaslaticisi = false
+                
+                if game.CoreGui:FindFirstChild("thisoneissocoldww") then game.CoreGui.thisoneissocoldww:Destroy() end
+                if game.CoreGui:FindFirstChild("MacroToggleGui") then game.CoreGui.MacroToggleGui:Destroy() end
+                
+                task.wait(0.5)
+                loadstring(newScript)() 
+                return
+            end
+        end)
+    end
+end)
+
+-- 2. Auto-Rejoin Private Server (Every 30 to 40 minutes)
+task.spawn(function()
+    while not getgenv().MacroKilled do
+        task.wait(math.random(1800, 2400)) 
+        if getgenv().MacroKilled then return end
+        
+        -- Rejoins the private server using the Access Code
+        pcall(function()
+            game:GetService("TeleportService"):TeleportToPrivateServer(game.PlaceId, PrivateServerCode)
+        end)
+    end
+end)
 
 ----------------------------------------------------
 -- ANTI-AFK UI & LOGIC SETUP
 ----------------------------------------------------
+repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character
+
 if getgenv().AntiAfkExecuted and thisoneissocoldww then 
     getgenv().AntiAfkExecuted = false
     getgenv().zamanbaslaticisi = false
@@ -29,7 +105,6 @@ local uselessframeone = Instance.new("Frame")
 local UICornerww = Instance.new("UICorner")
 local uselesslabelfour = Instance.new("TextLabel")
 
---Properties:
 thisoneissocoldww.Name = "thisoneissocoldww"
 thisoneissocoldww.Parent = game.CoreGui
 thisoneissocoldww.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -39,10 +114,8 @@ madebybloodofbatus.Parent = thisoneissocoldww
 madebybloodofbatus.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 madebybloodofbatus.Position = UDim2.new(0.0854133144, 0, 0.13128835, 0)
 madebybloodofbatus.Size = UDim2.new(0, 225, 0, 96)
-
 UICornerw.Parent = madebybloodofbatus
 
-DestroyButton.Name = "DestroyButton"
 DestroyButton.Parent = madebybloodofbatus
 DestroyButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 DestroyButton.BackgroundTransparency = 1.000
@@ -56,25 +129,24 @@ DestroyButton.TextSize = 14.000
 DestroyButton.MouseButton1Click:Connect(function()
     getgenv().AntiAfkExecuted = false
     getgenv().zamanbaslaticisi = false
+    getgenv().MacroKilled = true 
+    SaveToggleState("OFF") -- Save OFF state to Delta Workspace
     wait(0.1)
-    if thisoneissocoldww and thisoneissocoldww.Parent then
-        thisoneissocoldww:Destroy()
-    end
+    if thisoneissocoldww and thisoneissocoldww.Parent then thisoneissocoldww:Destroy() end
+    if game.CoreGui:FindFirstChild("MacroToggleGui") then game.CoreGui.MacroToggleGui:Destroy() end
 end)
 
 uselesslabelone.Parent = madebybloodofbatus
-uselesslabelone.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 uselesslabelone.BackgroundTransparency = 1.000
 uselesslabelone.Position = UDim2.new(0.302473009, 0, 0, 0)
 uselesslabelone.Size = UDim2.new(0, 95, 0, 24)
 uselesslabelone.Font = Enum.Font.SourceSans
-uselesslabelone.Text = "Anti Afk V1"
+uselesslabelone.Text = "Auto Macro V"..ScriptVersion
 uselesslabelone.TextColor3 = Color3.fromRGB(255, 255, 255)
 uselesslabelone.TextSize = 14.000
 
 timerlabel.Name = "timerlabel"
 timerlabel.Parent = madebybloodofbatus
-timerlabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 timerlabel.BackgroundTransparency = 1.000
 timerlabel.Position = UDim2.new(0.65344125, 0, 0.68194294, 0)
 timerlabel.Size = UDim2.new(0, 60, 0, 24)
@@ -84,7 +156,6 @@ timerlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 timerlabel.TextSize = 14.000
 
 uselesslabeltwo.Parent = madebybloodofbatus
-uselesslabeltwo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 uselesslabeltwo.BackgroundTransparency = 1.000
 uselesslabeltwo.Position = UDim2.new(0.038864471, 0, 0.373806685, 0)
 uselesslabeltwo.Size = UDim2.new(0, 29, 0, 24)
@@ -95,7 +166,6 @@ uselesslabeltwo.TextSize = 14.000
 
 fpslabel.Name = "fpslabel"
 fpslabel.Parent = madebybloodofbatus
-fpslabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 fpslabel.BackgroundTransparency = 1.000
 fpslabel.Position = UDim2.new(0.724226236, 0, 0.358796299, 0)
 fpslabel.Size = UDim2.new(0, 55, 0, 24)
@@ -105,7 +175,6 @@ fpslabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 fpslabel.TextSize = 14.000
 
 uselesslabelthree.Parent = madebybloodofbatus
-uselesslabelthree.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 uselesslabelthree.BackgroundTransparency = 1.000
 uselesslabelthree.Position = UDim2.new(0.506917477, 0, 0.352585167, 0)
 uselesslabelthree.Size = UDim2.new(0, 26, 0, 24)
@@ -116,7 +185,6 @@ uselesslabelthree.TextSize = 14.000
 
 pinglabel.Name = "pinglabel"
 pinglabel.Parent = madebybloodofbatus
-pinglabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 pinglabel.BackgroundTransparency = 1.000
 pinglabel.Position = UDim2.new(0.20330891, 0, 0.371578127, 0)
 pinglabel.Size = UDim2.new(0, 55, 0, 24)
@@ -134,16 +202,15 @@ UICornerww.CornerRadius = UDim.new(0, 50)
 UICornerww.Parent = uselessframeone
 
 uselesslabelfour.Parent = madebybloodofbatus
-uselesslabelfour.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 uselesslabelfour.BackgroundTransparency = 1.000
 uselesslabelfour.Position = UDim2.new(0.0580285639, 0, 0.8125, 0)
-uselesslabelfour.Size = UDim2.new(0, 95, 0, 12)
+uselesslabelfour.Size = UDim2.new(0, 150, 0, 12)
 uselesslabelfour.Font = Enum.Font.SourceSans
-uselesslabelfour.Text = "Anti-Afk Auto Enabled"
+uselesslabelfour.Text = "Delta Auto-Save On"
 uselesslabelfour.TextColor3 = Color3.fromRGB(255, 255, 255)
 uselesslabelfour.TextSize = 14.000
 
--- AFK UI Drag Logic
+-- UI Drag
 local Drag = madebybloodofbatus
 local gsTween = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -151,53 +218,43 @@ local dragging, dragInput, dragStart, startPos
 
 local function update(input)
     local delta = input.Position - dragStart
-    local SmoothDrag = {}
-    SmoothDrag.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    local dragSmoothFunction = gsTween:Create(Drag, TweenInfo.new(0.04, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), SmoothDrag)
-    dragSmoothFunction:Play()
+    local SmoothDrag = {Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)}
+    gsTween:Create(Drag, TweenInfo.new(0.04, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), SmoothDrag):Play()
 end
 Drag.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = Drag.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
+        dragging = true; dragStart = input.Position; startPos = Drag.Position
+        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
     end
 end)
 Drag.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
 end)
 UserInputService.InputChanged:Connect(function(input)
     if input == dragInput and dragging and Drag.Size then update(input) end
 end)
 
--- Actual Anti-AFK Kick Bypass
+-- Anti-AFK Bypass
 local VirtualUser = game:GetService("VirtualUser")
 game.Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
--- FPS Counter
+-- FPS/Ping Counters
 local FPS = {}
 local sec = tick()
 game:GetService("RunService").RenderStepped:Connect(function()
+    if getgenv().MacroKilled then return end
     local fr = tick()
-    for i = #FPS, 1, -1 do
-        FPS[i + 1] = (FPS[i] >= fr - 1) and FPS[i] or nil
-    end
+    for i = #FPS, 1, -1 do FPS[i + 1] = (FPS[i] >= fr - 1) and FPS[i] or nil end
     FPS[1] = fr
     local fps = math.floor((tick() - sec >= 1 and #FPS) or (#FPS / (tick() - sec)))
     if fpslabel and fpslabel.Parent then fpslabel.Text = fps end
 end)
 
--- Ping Counter
 task.spawn(function()
-    while timerlabel and timerlabel.Parent do
+    while timerlabel and timerlabel.Parent and not getgenv().MacroKilled do
         task.wait(1)
         local stats = game:GetService("Stats"):FindFirstChild("PerformanceStats")
         if stats and stats:FindFirstChild("Ping") then
@@ -207,21 +264,17 @@ task.spawn(function()
     end
 end)
 
--- Timer Counter (Threaded so it doesn't freeze the combat script)
 local saniye, dakika, saat = 0, 0, 0
 getgenv().zamanbaslaticisi = true
 task.spawn(function()
-    while getgenv().zamanbaslaticisi do
+    while getgenv().zamanbaslaticisi and not getgenv().MacroKilled do
         task.wait(1)
         saniye = saniye + 1
         if saniye >= 60 then saniye = 0; dakika = dakika + 1 end
         if dakika >= 60 then dakika = 0; saat = saat + 1 end
-        if timerlabel and timerlabel.Parent then
-            timerlabel.Text = saat..":"..dakika..":"..saniye
-        end
+        if timerlabel and timerlabel.Parent then timerlabel.Text = saat..":"..dakika..":"..saniye end
     end
 end)
-
 
 ----------------------------------------------------
 -- COMBAT MACRO SYSTEM START
@@ -235,22 +288,16 @@ local lp = Players.LocalPlayer
 local BEHIND_OFFSET = 6
 local DEAD_HP = 0.01
 local MAX_DISTANCE = 1000
-
--- Cooldown Variables
 local C_COOLDOWN = 15 
 local V_COOLDOWN = 6 
 
--- Toggle Variables
 local toggled = false
 local disabledByPlayer = false
 local wasForceDisabled = false 
 local lastToggle = 0
 local lockConn = nil
-
--- Sound Variables
 local lastDangerTime = 0
 
--- Key Codes
 local KeyCode_Z = Enum.KeyCode.Z
 local KeyCode_X = Enum.KeyCode.X
 local KeyCode_C = Enum.KeyCode.C
@@ -261,7 +308,6 @@ local KeyCode_G = Enum.KeyCode.G
 -- MOBILE TOGGLE UI CREATION
 ----------------------------------------------------
 local btn = nil 
-
 local function createToggleUI()
     local gui = Instance.new("ScreenGui")
     gui.Name = "MacroToggleGui"
@@ -289,26 +335,16 @@ local function createToggleUI()
     stroke.Color = Color3.fromRGB(100, 100, 100)
     stroke.Parent = btn
 
-    -- Make Macro Button Draggable
     local dragging2, dragInput2, dragStart2, startPos2
-
     btn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging2 = true
-            dragStart2 = input.Position
-            startPos2 = btn.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then dragging2 = false end
-            end)
+            dragging2 = true; dragStart2 = input.Position; startPos2 = btn.Position
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging2 = false end end)
         end
     end)
-
     btn.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput2 = input
-        end
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then dragInput2 = input end
     end)
-
     UserInputService.InputChanged:Connect(function(input)
         if input == dragInput2 and dragging2 then
             local delta = input.Position - dragStart2
@@ -316,11 +352,10 @@ local function createToggleUI()
         end
     end)
 end
-
 createToggleUI() 
 
 ----------------------------------------------------
--- SOUND SYSTEM
+-- SOUND & ALARM SYSTEM
 ----------------------------------------------------
 local function playAlarm(soundId, volume)
     local sound = Instance.new("Sound")
@@ -328,139 +363,81 @@ local function playAlarm(soundId, volume)
     sound.Volume = volume or 0.5
     sound.Parent = workspace
     sound:Play()
-    sound.Ended:Connect(function()
-        if sound and sound.Parent then sound:Destroy() end
-    end)
-    task.delay(15, function()
-        if sound and sound.Parent then sound:Destroy() end
-    end)
+    sound.Ended:Connect(function() if sound and sound.Parent then sound:Destroy() end end)
+    task.delay(15, function() if sound and sound.Parent then sound:Destroy() end end)
 end
 
-----------------------------------------------------
--- ANTI-PLAYER DETECTION SYSTEM
-----------------------------------------------------
 Players.PlayerAdded:Connect(function(player)
     playAlarm(138656991212198, 1)
 end)
 
 task.spawn(function()
-    while task.wait(0.5) do
+    while not getgenv().MacroKilled do
+        task.wait(0.5)
         local myChar = lp.Character
         local myHRP = myChar and myChar:FindFirstChild("HumanoidRootPart")
         if not myHRP then continue end
-
         local playerNearby = false
-
         for _, p in ipairs(Players:GetPlayers()) do
             if p ~= lp then
-                local pChar = p.Character
-                local pHRP = pChar and pChar:FindFirstChild("HumanoidRootPart")
-                
-                if pHRP then
-                    local dist = (myHRP.Position - pHRP.Position).Magnitude
-                    if dist <= 800 then
-                        playerNearby = true
-                        break 
-                    end
+                local pHRP = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+                if pHRP and (myHRP.Position - pHRP.Position).Magnitude <= 800 then
+                    playerNearby = true; break
                 end
             end
         end
-
         if playerNearby then
             if toggled and not disabledByPlayer then
-                disabledByPlayer = true
-                wasForceDisabled = true
-                disableAll()
-                playAlarm(18132053173, 1) 
-                lastDangerTime = tick()
+                disabledByPlayer = true; wasForceDisabled = true; disableAll(); playAlarm(18132053173, 1); lastDangerTime = tick()
             elseif disabledByPlayer and wasForceDisabled and (tick() - lastDangerTime > 4) then
-                playAlarm(18132053173, 0.5)
-                lastDangerTime = tick()
+                playAlarm(18132053173, 0.5); lastDangerTime = tick()
             end
         else
-            if disabledByPlayer and wasForceDisabled then
-                disabledByPlayer = false
-                wasForceDisabled = false
-                enableAll()
-            end
+            if disabledByPlayer and wasForceDisabled then disabledByPlayer = false; wasForceDisabled = false; enableAll() end
         end
     end
 end)
 
 ----------------------------------------------------
--- COMBAT & TARGETING SYSTEM
+-- COMBAT TARGETING & EXECUTION
 ----------------------------------------------------
-
-local function holdKey(key)
-    VIM:SendKeyEvent(true, key, false, game)
-end
-
-local function releaseKey(key)
-    VIM:SendKeyEvent(false, key, false, game)
-end
-
-local function tapKey(key)
-    holdKey(key)
-    task.wait(0.05)
-    releaseKey(key)
-end
+local function holdKey(key) VIM:SendKeyEvent(true, key, false, game) end
+local function releaseKey(key) VIM:SendKeyEvent(false, key, false, game) end
+local function tapKey(key) holdKey(key); task.wait(0.05); releaseKey(key) end
 
 local function getTarget()
     local char = lp.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
     local myPos = char.HumanoidRootPart.Position
-
-    local tier1_Bosses = {}
-    local tier2_Soldiers = {}
-    local tier3_Others = {}
-
+    local tier1_Bosses, tier2_Soldiers, tier3_Others = {}, {}, {}
     for _, enemy in ipairs(EnemyService:GetChildren()) do
         if enemy:IsA("Model") then
-            local hum = enemy:FindFirstChild("Humanoid")
-            local hrp = enemy:FindFirstChild("HumanoidRootPart")
-
+            local hum, hrp = enemy:FindFirstChild("Humanoid"), enemy:FindFirstChild("HumanoidRootPart")
             if hum and hrp and hum.Health > DEAD_HP then
                 local dist = (hrp.Position - myPos).Magnitude
-                
                 if dist <= MAX_DISTANCE then
                     local data = {enemy = enemy, dist = dist}
-                    local nameLower = enemy.Name:lower()
-                    
-                    local levelStr = enemy.Name:match("%[Lv%.(%d+)%]")
-                    local level = tonumber(levelStr) or 0
-
-                    if level == 15000 then
-                        table.insert(tier1_Bosses, data)
-                    elseif level == 13000 and nameLower:find("soldier") then
-                        table.insert(tier2_Soldiers, data)
-                    else
-                        table.insert(tier3_Others, data)
-                    end
+                    local level = tonumber(enemy.Name:match("%[Lv%.(%d+)%]")) or 0
+                    if level == 15000 then table.insert(tier1_Bosses, data)
+                    elseif level == 13000 and enemy.Name:lower():find("soldier") then table.insert(tier2_Soldiers, data)
+                    else table.insert(tier3_Others, data) end
                 end
             end
         end
     end
-
-    local function getClosest(tab)
-        if #tab == 0 then return nil end
-        table.sort(tab, function(a, b) return a.dist < b.dist end)
-        return tab[1].enemy
-    end
-
+    local function getClosest(tab) if #tab == 0 then return nil end table.sort(tab, function(a, b) return a.dist < b.dist end) return tab[1].enemy end
     return getClosest(tier1_Bosses) or getClosest(tier2_Soldiers) or getClosest(tier3_Others)
 end
 
 local function lockBehindEnemy()
+    if getgenv().MacroKilled then return end
     local char = lp.Character
     if not char then return end
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-
     local target = getTarget()
     if target and target:FindFirstChild("HumanoidRootPart") then
-        local targetHRP = target.HumanoidRootPart
-        local behindCF = targetHRP.CFrame * CFrame.new(0, 0, BEHIND_OFFSET)
-        
+        local behindCF = target.HumanoidRootPart.CFrame * CFrame.new(0, 0, BEHIND_OFFSET)
         hrp.Velocity = Vector3.new(0, 0, 0)
         hrp.CFrame = behindCF
     end
@@ -470,114 +447,67 @@ local function combatLoop()
     local zCasts = 0
     local lastCTime = tick() - (C_COOLDOWN - 0.5) 
     local lastVTime = tick() - (V_COOLDOWN - 1)
-
-    while toggled do
+    while toggled and not getgenv().MacroKilled do
         local timeSinceC = tick() - lastCTime
         local timeUntilC = C_COOLDOWN - timeSinceC
         local timeSinceV = tick() - lastVTime
-
         if timeSinceC >= C_COOLDOWN then
-            releaseKey(KeyCode_Z) 
-            task.wait(0.1)
-            tapKey(KeyCode_C) 
-            
-            for i = 1, 20 do 
-                if not toggled then return end
-                task.wait(0.1)
-            end
-            
-            tapKey(KeyCode_V) 
-            lastCTime = tick()
-            lastVTime = tick()
-            zCasts = 0 
-            task.wait(0.2)
-            
+            releaseKey(KeyCode_Z); task.wait(0.1); tapKey(KeyCode_C)
+            for i = 1, 20 do if not toggled or getgenv().MacroKilled then return end task.wait(0.1) end
+            tapKey(KeyCode_V); lastCTime = tick(); lastVTime = tick(); zCasts = 0; task.wait(0.2)
         elseif timeUntilC <= 2.0 then
-            releaseKey(KeyCode_Z)
-            task.wait(0.1)
-            
+            releaseKey(KeyCode_Z); task.wait(0.1)
         elseif timeSinceV >= V_COOLDOWN then
-            releaseKey(KeyCode_Z)
-            task.wait(0.1)
-            tapKey(KeyCode_V)
-            lastVTime = tick()
-            zCasts = 0 
-            task.wait(0.2)
-            
+            releaseKey(KeyCode_Z); task.wait(0.1); tapKey(KeyCode_V); lastVTime = tick(); zCasts = 0; task.wait(0.2)
         else
-            holdKey(KeyCode_Z)
-            task.wait(0.8)
-            zCasts = zCasts + 1
-            
-            if zCasts >= 2 then
-                releaseKey(KeyCode_Z)
-                task.wait(0.1)
-                tapKey(KeyCode_X)
-                zCasts = 0 
-                task.wait(0.2)
-            end
+            holdKey(KeyCode_Z); task.wait(0.8); zCasts = zCasts + 1
+            if zCasts >= 2 then releaseKey(KeyCode_Z); task.wait(0.1); tapKey(KeyCode_X); zCasts = 0; task.wait(0.2) end
         end
     end
-    
-    releaseKey(KeyCode_Z)
-    releaseKey(KeyCode_X)
-    releaseKey(KeyCode_C)
-    releaseKey(KeyCode_V)
+    releaseKey(KeyCode_Z); releaseKey(KeyCode_X); releaseKey(KeyCode_C); releaseKey(KeyCode_V)
 end
 
 ----------------------------------------------------
--- TOGGLE FUNCTIONS
+-- TOGGLE FUNCTIONS & DELTA WORKSPACE INTEGRATION
 ----------------------------------------------------
-
 local function enableAll()
     toggled = true
-    if btn then
-        btn.Text = "ON"
-        btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) 
-    end
+    SaveToggleState("ON") -- SAVE TO DELTA WORKSPACE
+    if btn then btn.Text = "ON"; btn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) end
     lockConn = RunService.RenderStepped:Connect(lockBehindEnemy)
     task.spawn(combatLoop)
 end
 
 local function disableAll()
     toggled = false
-    if btn then
-        btn.Text = "OFF"
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40) 
-    end
-    if lockConn then
-        lockConn:Disconnect()
-        lockConn = nil
-    end
+    SaveToggleState("OFF") -- SAVE TO DELTA WORKSPACE
+    if btn then btn.Text = "OFF"; btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40) end
+    if lockConn then lockConn:Disconnect(); lockConn = nil end
 end
 
 local function handleToggle()
     if tick() - lastToggle < 0.3 then return end
     lastToggle = tick()
-    
     if toggled then
-        disableAll()
-        disabledByPlayer = false
-        wasForceDisabled = false
+        disableAll(); disabledByPlayer = false; wasForceDisabled = false
     else
-        if disabledByPlayer then
-            disabledByPlayer = false
-            wasForceDisabled = false
-        else
-            enableAll()
-        end
+        if disabledByPlayer then disabledByPlayer = false; wasForceDisabled = false
+        else enableAll() end
     end
 end
 
-----------------------------------------------------
--- INPUT LISTENERS
-----------------------------------------------------
 RunService.RenderStepped:Connect(function()
-    if UserInputService:IsKeyDown(KeyCode_G) then
-        handleToggle()
-    end
+    if getgenv().MacroKilled then return end
+    if UserInputService:IsKeyDown(KeyCode_G) then handleToggle() end
 end)
 
-if btn then
-    btn.MouseButton1Click:Connect(handleToggle)
+if btn then btn.MouseButton1Click:Connect(handleToggle) end
+
+----------------------------------------------------
+-- AUTO-START ON REJOIN (Reads from Delta Workspace)
+----------------------------------------------------
+task.wait(2) -- Give the game a second to fully load characters
+if ReadToggleState() then
+    -- If the file says "ON", automatically start the macro!
+    enableAll()
 end
